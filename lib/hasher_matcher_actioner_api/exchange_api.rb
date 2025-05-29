@@ -19,11 +19,11 @@ module HasherMatcherActionerApi
       end
     end
 
-    SAMPLE = "sample".freeze
-    INFINITE_RANDOM = "infinite_random".freeze
-    FB_THREAT_EXCHANGE = "fb_threatexchange".freeze
-    NCMEC = "ncmec".freeze
-    STOP_NCII = "stop_ncii".freeze
+    SAMPLE = "sample"
+    INFINITE_RANDOM = "infinite_random"
+    FB_THREAT_EXCHANGE = "fb_threatexchange"
+    NCMEC = "ncmec"
+    STOP_NCII = "stop_ncii"
 
     SUPPORTED_EXCHANGES = [
       SAMPLE,
@@ -40,7 +40,7 @@ module HasherMatcherActionerApi
 
     def update_exchange_api_config(name:, credential_json:)
       validate_exchange_name!(name)
-      config = Config.new(name:, **post("/c/exchanges/api/#{name}", { credential_json: }))
+      config = Config.new(name:, **post("/c/exchanges/api/#{name}", {credential_json:}))
       config.validate!
       config
     end
@@ -78,15 +78,15 @@ module HasherMatcherActionerApi
     def validate_exchange_name!(name)
       return if SUPPORTED_EXCHANGES.include?(name)
 
-      raise HasherMatcherActionerApi::ArgumentError, 
-            "Exchange '#{name}' is not supported. Supported exchanges: #{SUPPORTED_EXCHANGES.join(', ')}"
+      raise HasherMatcherActionerApi::ArgumentError,
+        "Exchange '#{name}' is not supported. Supported exchanges: #{SUPPORTED_EXCHANGES.join(", ")}"
     end
 
     def validate_exchange_enabled!(name, configured_apis)
       return if configured_apis.include?(name)
 
-      raise HasherMatcherActionerApi::ApiNotConfiguredError, 
-            "Exchange '#{name}' is not configured. Add it to exchange_types in hasher-matcher-actioner config.py"
+      raise HasherMatcherActionerApi::ApiNotConfiguredError,
+        "Exchange '#{name}' is not configured. Add it to exchange_types in hasher-matcher-actioner config.py"
     end
   end
-end 
+end

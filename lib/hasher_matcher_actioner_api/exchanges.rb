@@ -22,10 +22,10 @@ module HasherMatcherActionerApi
     end
 
     def create_exchange(api:, bank:, api_json:)
-      post('/c/exchanges', {
+      post("/c/exchanges", {
         api:,
         bank:,
-        api_json:,
+        api_json:
       })
 
       get_exchange(name: bank)

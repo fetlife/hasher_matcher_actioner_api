@@ -10,23 +10,23 @@ module HasherMatcherActionerApi
 
     def hash_url(url:, content_type: nil, types: nil)
       if content_type && !Configuration::CONTENT_TYPES.include?(content_type)
-        raise ValidationError, "content_type must be one of: #{Configuration::CONTENT_TYPES.join(', ')}"
+        raise ValidationError, "content_type must be one of: #{Configuration::CONTENT_TYPES.join(", ")}"
       end
 
       if types && !types.all? { |type| Configuration::SIGNAL_TYPES.include?(type) }
-        raise ValidationError, "types must be one of: #{Configuration::SIGNAL_TYPES.join(', ')}"
+        raise ValidationError, "types must be one of: #{Configuration::SIGNAL_TYPES.join(", ")}"
       end
 
-      params = { url: url }
+      params = {url: url}
       params[:content_type] = content_type if content_type
       params[:types] = types if types
 
-      HashResult.new(get('/h/hash', params))
+      HashResult.new(get("/h/hash", params))
     end
 
     def hash_file(file:, content_type: nil)
       if content_type && !Configuration::CONTENT_TYPES.include?(content_type)
-        raise ValidationError, "content_type must be one of: #{Configuration::CONTENT_TYPES.join(', ')}"
+        raise ValidationError, "content_type must be one of: #{Configuration::CONTENT_TYPES.join(", ")}"
       end
 
       unless file.respond_to?(:read)
@@ -42,7 +42,7 @@ module HasherMatcherActionerApi
         content_type => Faraday::Multipart::FilePart.new(file, mime_type)
       }
 
-      HashResult.new(post('/h/hash', payload))
+      HashResult.new(post("/h/hash", payload))
     end
   end
 end

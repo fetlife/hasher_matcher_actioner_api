@@ -9,14 +9,14 @@ module HasherMatcherActionerApi
     end
 
     def create_bank(name:, enabled: true, matching_enabled_ratio: 1.0)
-      res = post('/c/banks', {
+      res = post("/c/banks", {
         name:,
         enabled:,
-        matching_enabled_ratio:,
+        matching_enabled_ratio:
       })
       Bank.new(res)
     end
-    
+
     def get_bank(name:)
       Bank.new(get("/c/bank/#{name}"))
     end

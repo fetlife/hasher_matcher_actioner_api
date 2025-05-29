@@ -1,19 +1,19 @@
 # frozen_string_literal: true
 
-require 'faraday'
-require 'faraday/retry'
-require 'faraday/multipart'
-require 'json'
-require 'logger'
-require 'marcel'
+require "faraday"
+require "faraday/retry"
+require "faraday/multipart"
+require "json"
+require "logger"
+require "marcel"
 
-require_relative 'banks'
-require_relative 'configuration'
-require_relative 'exchange_api'
-require_relative 'exchanges'
-require_relative 'hashing'
-require_relative 'matching'
-require_relative 'status'
+require_relative "banks"
+require_relative "configuration"
+require_relative "exchange_api"
+require_relative "exchanges"
+require_relative "hashing"
+require_relative "matching"
+require_relative "status"
 
 module HasherMatcherActionerApi
   class Client
@@ -47,9 +47,9 @@ module HasherMatcherActionerApi
           backoff_factor: 2,
           retry_statuses: [408, 429, 500, 502, 503, 504],
           exceptions: [
-            'Faraday::TimeoutError',
-            'Faraday::ConnectionFailed',
-            'Faraday::RetriableResponse'
+            "Faraday::TimeoutError",
+            "Faraday::ConnectionFailed",
+            "Faraday::RetriableResponse"
           ]
         }
 
@@ -57,13 +57,13 @@ module HasherMatcherActionerApi
           headers: log_level == :debug || log_level == :trace,
           bodies: log_level == :trace,
           errors: log_level == :debug,
-          log_level: log_level,
+          log_level: log_level
         }
-        f.response :json, parser_options: { symbolize_names: true }
+        f.response :json, parser_options: {symbolize_names: true}
 
         f.options.timeout = timeout
         f.options.open_timeout = timeout * 2
-        
+
         f.adapter Faraday.default_adapter
       end
     end
@@ -71,14 +71,14 @@ module HasherMatcherActionerApi
     def get(path, params = {})
       res = conn.get(path, params)
       handle_response(res)
-    rescue Faraday::ConnectionFailed => e
+    rescue Faraday::ConnectionFailed
       raise ConnectionError, "Could not connect to the server at #{conn.url_prefix}. Is the server running?"
     end
 
     def post(path, body = nil)
       res = conn.post(path, body)
       handle_response(res)
-    rescue Faraday::ConnectionFailed => e
+    rescue Faraday::ConnectionFailed
       raise ConnectionError, "Could not connect to the server at #{conn.url_prefix}. Is the server running?"
     end
 
@@ -113,5 +113,3 @@ module HasherMatcherActionerApi
     end
   end
 end
-
-
