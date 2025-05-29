@@ -2,11 +2,13 @@ PATH
   remote: .
   specs:
     hasher_matcher_actioner_api (0.1.0)
-      dry-struct (~> 1.8.0)
-      dry-types (~> 1.8.2)
-      faraday (~> 2.13.1)
+      dry-struct (~> 1.8)
+      dry-types (~> 1.8)
+      faraday (~> 2.13)
+      faraday-multipart (~> 1.1)
       faraday-retry (~> 2.2)
-      json (~> 2.12.2)
+      json (~> 2.12)
+      marcel (~> 1.0)
 
 GEM
   remote: https://rubygems.org/
@@ -49,6 +51,8 @@ GEM
       faraday-net_http (>= 2.0, < 3.5)
       json
       logger
+    faraday-multipart (1.1.0)
+      multipart-post (~> 2.0)
     faraday-net_http (3.4.0)
       net-http (>= 0.5.0)
     faraday-retry (2.3.1)
@@ -64,6 +68,8 @@ GEM
     language_server-protocol (3.17.0.5)
     lint_roller (1.1.0)
     logger (1.7.0)
+    marcel (1.0.4)
+    multipart-post (2.4.1)
     net-http (0.6.0)
       uri
     parallel (1.27.0)

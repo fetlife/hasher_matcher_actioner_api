@@ -2,23 +2,27 @@
 
 require 'faraday'
 require 'faraday/retry'
+require 'faraday/multipart'
 require 'json'
 require 'logger'
+require 'marcel'
 
 require_relative 'banks'
+require_relative 'configuration'
+require_relative 'exchange_api'
 require_relative 'exchanges'
 require_relative 'hashing'
 require_relative 'matching'
-require_relative 'exchange_api'
 require_relative 'status'
 
 module HasherMatcherActionerApi
   class Client
     include Banks
+    include Configuration
+    include ExchangeAPI
     include Exchanges
     include Hashing
     include Matching
-    include ExchangeAPI
     include Status
 
     attr_reader :conn
@@ -34,8 +38,8 @@ module HasherMatcherActionerApi
       max_retries: MAX_RETRIES
     )
       @conn = Faraday.new(url: base_url) do |f|
+        f.request :multipart, flat_encode: true
         f.request :json
-        
         f.request :retry, {
           max: max_retries,
           interval: 0.5,
@@ -83,17 +87,6 @@ module HasherMatcherActionerApi
     #   handle_response(res)
     # end
 
-    # def upload(path, file:, type:)
-    #   upload_file = Faraday::UploadIO.new(file, type)
-    #   res = conn.post(path, { file.key => upload_file })
-    #   handle_response(res)
-    # end
-
-    # def multipart(path, payload)
-    #   res = conn.post(path, payload)
-    #   handle_response(res)
-    # end
-
     private
 
     def handle_response(response)
@@ -102,7 +95,7 @@ module HasherMatcherActionerApi
         response.body
       when 400
         error = response.body
-        raise ValidationError, "Invalid request: #{error['message']}"
+        raise ValidationError, "Invalid request: #{error[:message]}"
       when 401
         raise AuthenticationError, "Authentication required"
       when 403
