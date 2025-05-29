@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'faraday'
+require 'faraday/retry'
 require 'json'
 require 'logger'
 
@@ -9,6 +10,7 @@ require_relative 'exchanges'
 require_relative 'hashing'
 require_relative 'matching'
 require_relative 'exchange_api'
+require_relative 'status'
 
 module HasherMatcherActionerApi
   class Client
@@ -17,7 +19,8 @@ module HasherMatcherActionerApi
     include Hashing
     include Matching
     include ExchangeAPI
-    
+    include Status
+
     attr_reader :conn
 
     DEFAULT_TIMEOUT = 3
@@ -27,16 +30,14 @@ module HasherMatcherActionerApi
     def initialize(
       base_url:,
       timeout: DEFAULT_TIMEOUT,
-      log_level: DEFAULT_LOG_LEVEL
+      log_level: DEFAULT_LOG_LEVEL,
+      max_retries: MAX_RETRIES
     )
-      @logger = logger || Logger.new($stdout)
-      @logger.level = log_level
-
       @conn = Faraday.new(url: base_url) do |f|
         f.request :json
         
         f.request :retry, {
-          max: MAX_RETRIES,
+          max: max_retries,
           interval: 0.5,
           interval_randomness: 0.5,
           backoff_factor: 2,
@@ -51,7 +52,7 @@ module HasherMatcherActionerApi
         f.response :logger, nil, {
           headers: log_level == :debug || log_level == :trace,
           bodies: log_level == :trace,
-          errors: true,
+          errors: log_level == :debug,
           log_level: log_level,
         }
         f.response :json, parser_options: { symbolize_names: true }
@@ -66,11 +67,15 @@ module HasherMatcherActionerApi
     def get(path, params = {})
       res = conn.get(path, params)
       handle_response(res)
+    rescue Faraday::ConnectionFailed => e
+      raise ConnectionError, "Could not connect to the server at #{conn.url_prefix}. Is the server running?"
     end
 
     def post(path, body = nil)
       res = conn.post(path, body)
       handle_response(res)
+    rescue Faraday::ConnectionFailed => e
+      raise ConnectionError, "Could not connect to the server at #{conn.url_prefix}. Is the server running?"
     end
 
     # def put(path, body = nil)
@@ -106,6 +111,9 @@ module HasherMatcherActionerApi
         raise NotFoundError, "Resource not found"
       when 500
         raise ServerError, "Internal server error: #{response.body}"
+      when 503
+        return response.body if response.body == "INDEX-STALE"
+        raise ServerError, "Service unavailable: #{response.body}"
       else
         raise Error, "Unexpected error: #{response.status} - #{response.body}"
       end
