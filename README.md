@@ -1,5 +1,10 @@
 # HasherMatcherActionerApi
 
+[![Gem Version](https://img.shields.io/gem/v/hasher_matcher_actioner_api)](https://rubygems.org/gems/hasher_matcher_actioner_api)
+[![Gem Downloads](https://img.shields.io/gem/dt/hasher_matcher_actioner_api)](https://www.ruby-toolbox.com/projects/hasher_matcher_actioner_api)
+[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/fetlife/hasher_matcher_actioner_api/ci.yml)](https://github.com/fetlife/hasher_matcher_actioner_api/actions/workflows/ci.yml)
+[![Code Climate maintainability](https://img.shields.io/codeclimate/maintainability/fetlife/hasher_matcher_actioner_api)](https://codeclimate.com/github/fetlife/hasher_matcher_actioner_api)
+
 Wrapper around the [HasherMatcherActioner](https://github.com/facebook/ThreatExchange/tree/main/hasher-matcher-actioner) service.
 
 ## Installation
@@ -111,7 +116,7 @@ To release a new version, update the version number in `version.rb`, and then ru
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/Pezmc/hasher_matcher_actioner_api. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/Pezmc/hasher_matcher_actioner_api/blob/main/CODE_OF_CONDUCT.md).
+Bug reports and pull requests are welcome on GitHub at https://github.com/fetlife/hasher_matcher_actioner_api. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/fetlife/hasher_matcher_actioner_api/blob/main/CODE_OF_CONDUCT.md).
 
 ## License
 
@@ -119,4 +124,4 @@ The gem is available as open source under the terms of the [MIT License](https:/
 
 ## Code of Conduct
 
-Everyone interacting in the HasherMatcherActionerApi project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/Pezmc/hasher_matcher_actioner_api/blob/main/CODE_OF_CONDUCT.md).
+Everyone interacting in the HasherMatcherActionerApi project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/fetlife/hasher_matcher_actioner_api/blob/main/CODE_OF_CONDUCT.md).
