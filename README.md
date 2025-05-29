@@ -1,8 +1,6 @@
 # HasherMatcherActionerApi
 
-TODO: Delete this and the text below, and describe your gem
-
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/hasher_matcher_actioner_api`. To experiment with that code, run `bin/console` for an interactive prompt.
+Wrapper around the [HasherMatcherActioner](https://github.com/facebook/ThreatExchange/tree/main/hasher-matcher-actioner) service.
 
 ## Installation
 
@@ -22,13 +20,94 @@ gem install UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG
 
 ## Usage
 
-TODO: Write usage instructions here
+The HasherMatcherActionerApi gem provides functionality to hash URLs and files for content matching. Here are some examples of how to use it:
+
+### Basic Setup
+
+```ruby
+require 'hasher_matcher_actioner_api'
+
+# Configure the API client
+client = HasherMatcherActionerApi::Client.new(
+  api_key: 'your_api_key',
+  base_url: 'https://api.example.com'
+)
+```
+
+### Hashing URLs
+
+```ruby
+# Hash a URL with default settings
+result = client.hash_url(url: 'https://example.com/image.jpg')
+
+# Hash a URL with specific content type
+result = client.hash_url(
+  url: 'https://example.com/image.jpg',
+  content_type: 'image'
+)
+
+# Hash a URL with specific signal types
+result = client.hash_url(
+  url: 'https://example.com/image.jpg',
+  types: ['pdq', 'md5']
+)
+```
+
+### Hashing Files
+
+```ruby
+# Hash a file from disk
+File.open('path/to/image.jpg', 'rb') do |file|
+  result = client.hash_file(
+    file: file,
+    content_type: 'image'
+  )
+end
+
+# Hash a file from memory
+require 'stringio'
+file = StringIO.new(file_content)
+result = client.hash_file(
+  file: file,
+  content_type: 'image'
+)
+```
+
+### Working with Results
+
+The hash results are returned as a `HashResult` object with attributes for each signal type:
+
+```ruby
+result = client.hash_url(url: 'https://example.com/image.jpg')
+
+# Access individual hash values
+puts result.pdq    # PDQ hash value
+puts result.md5    # MD5 hash value
+puts result.sha256 # SHA256 hash value
+```
+
+### Error Handling
+
+The gem raises `ValidationError` for invalid inputs:
+
+```ruby
+begin
+  result = client.hash_url(
+    url: 'https://example.com/image.jpg',
+    content_type: 'invalid_type'
+  )
+rescue HasherMatcherActionerApi::ValidationError => e
+  puts "Error: #{e.message}"
+end
+```
 
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and the created tag, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+To install this gem onto your local machine, run `bundle exec rake install`.
+
+To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and the created tag, and push the `.gem` file to [rubygems.org](https://rubygems.org).
 
 ## Contributing
 
