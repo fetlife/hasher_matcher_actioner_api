@@ -8,26 +8,19 @@ module HasherMatcherActionerApi
       end
     end
 
-    def hash_url(url:, content_type: nil, types: nil)
-      if content_type && !Configuration::CONTENT_TYPES.include?(content_type)
-        raise ValidationError, "content_type must be one of: #{Configuration::CONTENT_TYPES.join(", ")}"
-      end
-
-      if types && !types.all? { |type| Configuration::SIGNAL_TYPES.include?(type) }
-        raise ValidationError, "types must be one of: #{Configuration::SIGNAL_TYPES.join(", ")}"
-      end
+    def hash_url(url, content_type: nil, signal_types: nil)
+      validate_content_type!(content_type)
+      validate_signal_types!(signal_types)
 
       params = {url: url}
       params[:content_type] = content_type if content_type
-      params[:types] = types if types
+      params[:types] = signal_types.join(",") if signal_types
 
       HashResult.new(get("/h/hash", params))
     end
 
-    def hash_file(file:, content_type: nil)
-      if content_type && !Configuration::CONTENT_TYPES.include?(content_type)
-        raise ValidationError, "content_type must be one of: #{Configuration::CONTENT_TYPES.join(", ")}"
-      end
+    def hash_file(file, content_type:)
+      validate_content_type!(content_type)
 
       unless file.respond_to?(:read)
         raise ValidationError, "file must be an IO-like object that responds to #read"
@@ -43,6 +36,20 @@ module HasherMatcherActionerApi
       }
 
       HashResult.new(post("/h/hash", payload))
+    end
+
+    private
+
+    def validate_content_type!(content_type)
+      if content_type && !Configuration::CONTENT_TYPES.include?(content_type)
+        raise ValidationError, "content_type must be one of: #{Configuration::CONTENT_TYPES.join(", ")}, received: #{content_type}"
+      end
+    end
+
+    def validate_signal_types!(signal_types)
+      if signal_types&.any? { |signal_type| !Configuration::SIGNAL_TYPES.include?(signal_type) }
+        raise ValidationError, "signal types must be one of: #{Configuration::SIGNAL_TYPES.join(", ")}, received: #{signal_types.join(", ")}"
+      end
     end
   end
 end
