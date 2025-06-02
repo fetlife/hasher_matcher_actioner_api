@@ -3,46 +3,52 @@
 require "spec_helper"
 
 RSpec.describe HasherMatcherActionerApi::Client do
-  let(:client) { described_class.new(base_url: "http://localhost:5000", max_retries: 0) }
+  let(:client) { described_class.new(base_url: "http://127.0.0.1:5050", max_retries: 0) }
 
   describe "#raw_lookup" do
-    let(:signal) { "test_signal" }
     let(:signal_type) { "pdq" }
 
-    context "without distance" do
-      before do
-        stub_successful_response(
-          :get,
-          "/m/raw_lookup",
-          query: {signal: signal, signal_type: signal_type, include_distance: false},
-          body: {matches: [1, 2, 3]}
-        )
+    context "with a signal found in the database" do
+      let(:signal) { HasherMatcherActionerApi::TestConstants::IMAGE_IN_DB_PDQ_HASH }
+
+      context "without distance" do
+        it "returns matches result", :vcr do
+          result = client.raw_lookup(signal, signal_type: signal_type)
+          expect(result.matches).not_to be_empty
+        end
       end
 
-      it "returns matches result" do
-        result = client.raw_lookup(signal, signal_type: signal_type)
-        expect(result.matches).to eq([1, 2, 3])
+      context "with distance" do
+        it "returns matches result with distance", :vcr do
+          result = client.raw_lookup(signal, signal_type: signal_type, include_distance: true)
+          expect(result.matches).not_to be_empty
+          expect(result.matches.first).to respond_to(:bank_content_id)
+          expect(result.matches.first).to respond_to(:distance)
+        end
       end
     end
 
-    context "with distance" do
-      before do
-        stub_successful_response(
-          :get,
-          "/m/raw_lookup",
-          query: {signal: signal, signal_type: signal_type, include_distance: true},
-          body: {matches: [{bank_content_id: 1, distance: 5}, {bank_content_id: 2, distance: 10}]}
-        )
-      end
+    context "with a signal with a partial match found in the database" do
+      let(:signal) { HasherMatcherActionerApi::TestConstants::IMAGE_EDIT_IN_DB_PDQ_HASH }
 
-      it "returns matches result with distance" do
-        result = client.raw_lookup(signal, signal_type: signal_type, include_distance: true)
-        expect(result.matches.map(&:bank_content_id)).to eq([1, 2])
-        expect(result.matches.map(&:distance)).to eq([5, 10])
+      it "returns matches result", :vcr do
+        result = client.raw_lookup(signal, signal_type: signal_type)
+        expect(result.matches).not_to be_empty
+      end
+    end
+
+    context "with a signal not found in the database" do
+      let(:signal) { HasherMatcherActionerApi::TestConstants::IMAGE_NOT_IN_DB_PDQ_HASH }
+
+      it "returns empty matches", :vcr do
+        result = client.raw_lookup(signal, signal_type: signal_type)
+        expect(result.matches).to be_empty
       end
     end
 
     context "with invalid signal type" do
+      let(:signal) { HasherMatcherActionerApi::TestConstants::IMAGE_NOT_IN_DB_PDQ_HASH }
+
       it "raises error" do
         expect {
           client.raw_lookup(signal, signal_type: "invalid_type")
@@ -52,82 +58,66 @@ RSpec.describe HasherMatcherActionerApi::Client do
   end
 
   describe "#lookup_url" do
-    let(:url) { "https://example.com/image.jpg" }
+    let(:url) { "https://i.ibb.co/wF7823P1/image-in-hash-db.jpg" }
     let(:valid_content_type) { "photo" }
-    let(:valid_signal_types) { ["pdq", "video_md5"] }
+    let(:valid_signal_types) { ["pdq"] }
 
     context "with valid parameters" do
-      before do
-        stub_successful_response(
-          :get,
-          "/m/lookup",
-          query: {url: url},
-          body: {
-            pdq: {
-              "bank1" => [{bank_content_id: 1, distance: 5}],
-              "bank2" => [{bank_content_id: 2, distance: 10}]
-            },
-            video_md5: {
-              "bank1" => [{bank_content_id: 3, distance: 15}]
-            }
-          }
-        )
-      end
+      context "with a signal found in the database" do
+        it "returns normalized matches", :vcr do
+          result = client.lookup_url(url)
+          expect(result).not_to be_empty
 
-      it "returns normalized matches" do
-        result = client.lookup_url(url)
-        expect(result).to contain_exactly(
-          have_attributes(signal_type: "pdq", bank_name: "bank1", bank_content_id: 1, distance: 5),
-          have_attributes(signal_type: "pdq", bank_name: "bank2", bank_content_id: 2, distance: 10),
-          have_attributes(signal_type: "video_md5", bank_name: "bank1", bank_content_id: 3, distance: 15)
-        )
-      end
-
-      context "with content type" do
-        before do
-          stub_successful_response(
-            :get,
-            "/m/lookup",
-            query: {url: url, content_type: valid_content_type},
-            body: {
-              pdq: {
-                "bank1" => [{bank_content_id: 1, distance: 5}]
-              }
-            }
-          )
+          match = result.first
+          expect(match.signal_type).to eq("pdq")
+          expect(match.bank_name).to eq("BANK")
+          expect(match.bank_content_id).to eq(4)
+          expect(match.distance).to eq(0)
         end
 
-        it "returns normalized matches with content type" do
-          result = client.lookup_url(url, content_type: valid_content_type)
-          expect(result).to contain_exactly(
-            have_attributes(signal_type: "pdq", bank_name: "bank1", bank_content_id: 1, distance: 5)
-          )
+        context "with content type" do
+          it "returns normalized matches with content type", :vcr do
+            result = client.lookup_url(url, content_type: valid_content_type)
+            expect(result).not_to be_empty
+            expect(result.first).to respond_to(:signal_type)
+            expect(result.first).to respond_to(:bank_name)
+            expect(result.first).to respond_to(:bank_content_id)
+            expect(result.first).to respond_to(:distance)
+          end
+        end
+
+        context "with signal types" do
+          it "returns normalized matches with specified signal types", :vcr do
+            result = client.lookup_url(url, signal_types: valid_signal_types)
+            expect(result).not_to be_empty
+            expect(result.first).to respond_to(:signal_type)
+            expect(result.first).to respond_to(:bank_name)
+            expect(result.first).to respond_to(:bank_content_id)
+            expect(result.first).to respond_to(:distance)
+          end
         end
       end
 
-      context "with signal types" do
-        before do
-          stub_successful_response(
-            :get,
-            "/m/lookup",
-            query: {url: url, types: valid_signal_types.join(",")},
-            body: {
-              pdq: {
-                "bank1" => [{bank_content_id: 1, distance: 5}]
-              },
-              video_md5: {
-                "bank1" => [{bank_content_id: 2, distance: 10}]
-              }
-            }
-          )
-        end
+      context "with a signal with a partial match found in the database" do
+        let(:url) { "https://i.ibb.co/hRFZPCZD/edit-of-image-in-hash-db.jpg" }
+        it "returns matches result", :vcr do
+          result = client.lookup_url(url)
+          expect(result).not_to be_empty
 
-        it "returns normalized matches with specified signal types" do
-          result = client.lookup_url(url, signal_types: valid_signal_types)
-          expect(result).to contain_exactly(
-            have_attributes(signal_type: "pdq", bank_name: "bank1", bank_content_id: 1, distance: 5),
-            have_attributes(signal_type: "video_md5", bank_name: "bank1", bank_content_id: 2, distance: 10)
-          )
+          match = result.first
+          expect(match.signal_type).to eq("pdq")
+          expect(match.bank_name).to eq("BANK")
+          expect(match.bank_content_id).to eq(4)
+          expect(match.distance).to eq(26)
+        end
+      end
+
+      context "with a signal not found in the database" do
+        let(:url) { "https://i.ibb.co/nNTSphV2/image-not-in-hash-db.jpg" }
+
+        it "returns empty matches", :vcr do
+          result = client.lookup_url(url)
+          expect(result).to be_empty
         end
       end
     end
@@ -148,28 +138,45 @@ RSpec.describe HasherMatcherActionerApi::Client do
   end
 
   describe "#lookup_file" do
-    let(:file) { StringIO.new("test content") }
+    let(:file) { File.open(File.join(File.dirname(__FILE__), "..", "fixtures", "image-in-hash-db.jpg")) }
     let(:valid_content_type) { "photo" }
 
     context "with valid parameters" do
-      before do
-        stub_successful_post(
-          "/m/lookup",
-          body: {
-            pdq: {
-              "bank1" => [{bank_content_id: 1, distance: 5}],
-              "bank2" => [{bank_content_id: 2, distance: 10}]
-            }
-          }
-        )
+      context "with a signal found in the database" do
+        it "returns normalized matches", vcr: {match_requests_on: [:method, :uri]} do
+          result = client.lookup_file(file, content_type: valid_content_type)
+          expect(result).not_to be_empty
+
+          match = result.first
+          expect(match.signal_type).to eq("pdq")
+          expect(match.bank_name).to eq("BANK")
+          expect(match.bank_content_id).to eq(4)
+          expect(match.distance).to eq(0)
+        end
       end
 
-      it "returns normalized matches" do
-        result = client.lookup_file(file, content_type: valid_content_type)
-        expect(result).to contain_exactly(
-          have_attributes(signal_type: "pdq", bank_name: "bank1", bank_content_id: 1, distance: 5),
-          have_attributes(signal_type: "pdq", bank_name: "bank2", bank_content_id: 2, distance: 10)
-        )
+      context "with a signal with a partial match found in the database" do
+        let(:file) { File.open(File.join(File.dirname(__FILE__), "..", "fixtures", "edit-of-image-in-hash-db.jpg")) }
+
+        it "returns matches result", vcr: {match_requests_on: [:method, :uri]} do
+          result = client.lookup_file(file, content_type: valid_content_type)
+          expect(result).not_to be_empty
+
+          match = result.first
+          expect(match.signal_type).to eq("pdq")
+          expect(match.bank_name).to eq("BANK")
+          expect(match.bank_content_id).to eq(4)
+          expect(match.distance).to eq(26)
+        end
+      end
+
+      context "with a signal not found in the database" do
+        let(:file) { File.open(File.join(File.dirname(__FILE__), "..", "fixtures", "image-not-in-hash-db.jpg")) }
+
+        it "returns empty matches", vcr: {match_requests_on: [:method, :uri]} do
+          result = client.lookup_file(file, content_type: valid_content_type)
+          expect(result).to be_empty
+        end
       end
     end
 

@@ -3,71 +3,33 @@
 require "spec_helper"
 
 RSpec.describe HasherMatcherActionerApi::Client do
-  let(:client) { described_class.new(base_url: "http://localhost:5000", max_retries: 0) }
+  let(:client) { described_class.new(base_url: "http://127.0.0.1:5050", max_retries: 0) }
 
   describe "#status" do
     context "when service is healthy" do
-      before do
-        stub_successful_response(
-          :get,
-          "/status",
-          query: {},
-          body: "I-AM-ALIVE"
-        )
-      end
-
-      it "returns I-AM-ALIVE" do
-        expect(client.status.alive?).to eq(true)
-        expect(client.status.stale?).to eq(false)
+      it "returns healthy status", :vcr do
+        result = client.status
+        expect(result.status).to eq("I-AM-ALIVE")
       end
     end
 
-    context "when index is stale" do
-      before do
-        stub_response(
-          :get,
-          "/status",
-          query: {},
-          body: "INDEX-STALE",
-          status: 503
-        )
-      end
-
-      it "returns INDEX-STALE" do
-        expect(client.status.alive?).to eq(false)
-        expect(client.status.stale?).to eq(true)
+    context "when service is unhealthy" do
+      it "returns unhealthy status", :vcr do
+        result = client.status
+        expect(result.status).to eq("INDEX-STALE")
       end
     end
   end
 
   describe "#server_ready?" do
     context "when service is healthy" do
-      before do
-        stub_successful_response(
-          :get,
-          "/status",
-          query: {},
-          body: "I-AM-ALIVE"
-        )
-      end
-
-      it "returns true" do
+      it "returns true", :vcr do
         expect(client.server_ready?).to be(true)
       end
     end
 
     context "when service is not healthy" do
-      before do
-        stub_response(
-          :get,
-          "/status",
-          query: {},
-          body: "INDEX-STALE",
-          status: 503
-        )
-      end
-
-      it "returns false" do
+      it "returns false", :vcr do
         expect(client.server_ready?).to be(false)
       end
     end

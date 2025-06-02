@@ -1,0 +1,38 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: http://127.0.0.1:5050/h/hash?types=pdq&url=https://i.ibb.co/wF7823P1/image-in-hash-db.jpg
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Faraday v2.13.1
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - Werkzeug/3.1.3 Python/3.11.12
+      Date:
+      - Mon, 02 Jun 2025 14:57:46 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '80'
+      Connection:
+      - close
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "pdq": "f8f8f0cee0f4a84f06370a22038f63f0b36e2ed596621e1d33e6b39c4e9c9b22"
+        }
+  recorded_at: Mon, 02 Jun 2025 14:57:46 GMT
+recorded_with: VCR 6.3.1

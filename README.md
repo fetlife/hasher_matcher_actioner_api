@@ -120,7 +120,7 @@ To release a new version:
 This will:
 - Create a git tag for the version
 - Push git commits and the created tag
-- Create a GitHub release
+- Trigger Github release workflow
 
 ## Contributing
 

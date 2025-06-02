@@ -1,0 +1,38 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: http://127.0.0.1:5050/m/lookup?url=https://i.ibb.co/nNTSphV2/image-not-in-hash-db.jpg
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Faraday v2.13.1
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - Werkzeug/3.1.3 Python/3.11.12
+      Date:
+      - Mon, 02 Jun 2025 15:21:46 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '16'
+      Connection:
+      - close
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "pdq": {}
+        }
+  recorded_at: Mon, 02 Jun 2025 15:21:46 GMT
+recorded_with: VCR 6.3.1

@@ -3,7 +3,19 @@
 require "bundler/setup"
 require "hasher_matcher_actioner_api"
 require "webmock/rspec"
+require "vcr"
 require_relative "support/shared_stubs"
+require_relative "support/test_constants"
+
+VCR.configure do |config|
+  config.cassette_library_dir = "spec/vcr_cassettes"
+  config.hook_into :webmock
+  config.configure_rspec_metadata!
+  config.default_cassette_options = {
+    record: :once,
+    match_requests_on: [:method, :uri, :body]
+  }
+end
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
