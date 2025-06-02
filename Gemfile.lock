@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    hasher_matcher_actioner_api (0.1.1)
+    hasher_matcher_actioner_api (0.1.2)
       dry-struct (~> 1.8)
       dry-types (~> 1.8)
       faraday (~> 2.13)
