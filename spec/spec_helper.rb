@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
 require "bundler/setup"
-require "webmock/rspec"
 require "hasher_matcher_actioner_api"
+require "webmock/rspec"
+require_relative "support/shared_stubs"
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
@@ -19,4 +20,12 @@ RSpec.configure do |config|
   config.mock_with :rspec do |mocks|
     mocks.verify_partial_doubles = true
   end
+
+  config.shared_context_metadata_behavior = :apply_to_host_groups
+  config.filter_run_when_matching :focus
+  config.example_status_persistence_file_path = "spec/examples.txt"
+  config.warnings = true
+
+  config.order = :random
+  Kernel.srand config.seed
 end

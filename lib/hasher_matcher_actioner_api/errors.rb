@@ -11,9 +11,14 @@ module HasherMatcherActionerApi
 
   # API Errors
   class AuthenticationError < Error; end
+
   class NotFoundError < Error; end
+
   class PermissionError < Error; end
+
   class ServerError < Error; end
+
   class ValidationError < Error; end
+
   class ApiNotConfiguredError < Error; end
-end 
+end

@@ -8,8 +8,12 @@ RSpec.describe HasherMatcherActionerApi::Client do
   describe "#status" do
     context "when service is healthy" do
       before do
-        stub_request(:get, "http://localhost:5000/status")
-          .to_return(status: 200, body: "I-AM-ALIVE")
+        stub_successful_response(
+          :get,
+          "/status",
+          query: {},
+          body: "I-AM-ALIVE"
+        )
       end
 
       it "returns I-AM-ALIVE" do
@@ -20,8 +24,13 @@ RSpec.describe HasherMatcherActionerApi::Client do
 
     context "when index is stale" do
       before do
-        stub_request(:get, "http://localhost:5000/status")
-          .to_return(status: 503, body: "INDEX-STALE")
+        stub_response(
+          :get,
+          "/status",
+          query: {},
+          body: "INDEX-STALE",
+          status: 503
+        )
       end
 
       it "returns INDEX-STALE" do
@@ -34,8 +43,12 @@ RSpec.describe HasherMatcherActionerApi::Client do
   describe "#server_ready?" do
     context "when service is healthy" do
       before do
-        stub_request(:get, "http://localhost:5000/status")
-          .to_return(status: 200, body: "I-AM-ALIVE")
+        stub_successful_response(
+          :get,
+          "/status",
+          query: {},
+          body: "I-AM-ALIVE"
+        )
       end
 
       it "returns true" do
@@ -45,8 +58,13 @@ RSpec.describe HasherMatcherActionerApi::Client do
 
     context "when service is not healthy" do
       before do
-        stub_request(:get, "http://localhost:5000/status")
-          .to_return(status: 503, body: "INDEX-STALE")
+        stub_response(
+          :get,
+          "/status",
+          query: {},
+          body: "INDEX-STALE",
+          status: 503
+        )
       end
 
       it "returns false" do
