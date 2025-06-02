@@ -1,11 +1,8 @@
 # HasherMatcherActionerApi
 
-[![Gem Version](https://img.shields.io/gem/v/hasher_matcher_actioner_api)](https://rubygems.org/gems/hasher_matcher_actioner_api)
-[![Gem Downloads](https://img.shields.io/gem/dt/hasher_matcher_actioner_api)](https://www.ruby-toolbox.com/projects/hasher_matcher_actioner_api)
-[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/fetlife/hasher_matcher_actioner_api/ci.yml)](https://github.com/fetlife/hasher_matcher_actioner_api/actions/workflows/ci.yml)
-[![Code Climate maintainability](https://img.shields.io/codeclimate/maintainability/fetlife/hasher_matcher_actioner_api)](https://codeclimate.com/github/fetlife/hasher_matcher_actioner_api)
+Wrapper around the [HasherMatcherActioner](https://github.com/facebook/ThreatExchange/tree/main/hasher-matcher-actioner) service from Meta.
 
-Wrapper around the [HasherMatcherActioner](https://github.com/facebook/ThreatExchange/tree/main/hasher-matcher-actioner) service.
+This gem can be used to hash content, or search for matches for a piece of content in one or more exchange banks.
 
 ## Installation
 
@@ -20,7 +17,6 @@ Or add to your Gemfile:
 ```ruby
 gem "hasher_matcher_actioner_api", github: "fetlife/hasher_matcher_actioner_api"
 ```
-
 
 ## Usage
 
