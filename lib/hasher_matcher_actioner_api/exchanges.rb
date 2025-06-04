@@ -13,10 +13,10 @@ module HasherMatcherActionerApi
     end
 
     class ExchangeStatus < Dry::Struct
-      attribute :checkpoint_ts, HasherMatcherActionerApi::Types::Integer
+      attribute :checkpoint_ts, HasherMatcherActionerApi::Types::Integer.optional
       attribute :fetched_items, HasherMatcherActionerApi::Types::Integer
-      attribute :last_fetch_complete_ts, HasherMatcherActionerApi::Types::Integer
-      attribute :last_fetch_succeeded, HasherMatcherActionerApi::Types::Bool
+      attribute :last_fetch_complete_ts, HasherMatcherActionerApi::Types::Integer.optional
+      attribute :last_fetch_succeeded, HasherMatcherActionerApi::Types::Bool.optional
       attribute :running_fetch_start_ts, HasherMatcherActionerApi::Types::Integer.optional
       attribute :up_to_date, HasherMatcherActionerApi::Types::Bool
     end

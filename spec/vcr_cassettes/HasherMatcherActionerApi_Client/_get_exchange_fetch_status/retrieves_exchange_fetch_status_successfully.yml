@@ -1,0 +1,43 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: http://127.0.0.1:5050/c/exchange/NEW_BANK_NAME/status
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Faraday v2.13.1
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - Werkzeug/3.1.3 Python/3.11.12
+      Date:
+      - Wed, 04 Jun 2025 08:36:22 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '173'
+      Connection:
+      - close
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "checkpoint_ts": null,
+          "fetched_items": 0,
+          "last_fetch_complete_ts": null,
+          "last_fetch_succeeded": null,
+          "running_fetch_start_ts": null,
+          "up_to_date": false
+        }
+  recorded_at: Wed, 04 Jun 2025 08:36:22 GMT
+recorded_with: VCR 6.3.1
