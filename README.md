@@ -29,7 +29,6 @@ require 'hasher_matcher_actioner_api'
 
 # Configure the API client
 client = HasherMatcherActionerApi::Client.new(
-  api_key: 'your_api_key',
   base_url: 'https://api.example.com'
 )
 ```
@@ -43,13 +42,13 @@ result = client.hash_url(url: 'https://example.com/image.jpg')
 # Hash a URL with specific content type
 result = client.hash_url(
   url: 'https://example.com/image.jpg',
-  content_type: 'image'
+  content_type: 'photo'
 )
 
 # Hash a URL with specific signal types
 result = client.hash_url(
   url: 'https://example.com/image.jpg',
-  types: ['pdq', 'md5']
+  signal_types: ['pdq', 'md5']
 )
 ```
 
@@ -60,7 +59,7 @@ result = client.hash_url(
 File.open('path/to/image.jpg', 'rb') do |file|
   result = client.hash_file(
     file: file,
-    content_type: 'image'
+    content_type: 'photo'
   )
 end
 
@@ -69,7 +68,7 @@ require 'stringio'
 file = StringIO.new(file_content)
 result = client.hash_file(
   file: file,
-  content_type: 'image'
+  content_type: 'photo'
 )
 ```
 
