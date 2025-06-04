@@ -1,0 +1,40 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: http://127.0.0.1:5050/c/banks
+    body:
+      encoding: UTF-8
+      string: '{"name":"TEST_BANK","enabled":"true","matching_enabled_ratio":1.0}'
+    headers:
+      User-Agent:
+      - Faraday v2.13.1
+      Content-Type:
+      - application/json
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 403
+      message: FORBIDDEN
+    headers:
+      Server:
+      - Werkzeug/3.1.3 Python/3.11.12
+      Date:
+      - Wed, 04 Jun 2025 08:29:54 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '39'
+      Connection:
+      - close
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "message": "Bank already exists"
+        }
+  recorded_at: Wed, 04 Jun 2025 08:29:54 GMT
+recorded_with: VCR 6.3.1

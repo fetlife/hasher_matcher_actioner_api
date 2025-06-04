@@ -11,7 +11,7 @@ module HasherMatcherActionerApi
     def create_bank(name:, enabled: true, matching_enabled_ratio: 1.0)
       res = post("/c/banks", {
         name:,
-        enabled:,
+        enabled: enabled.to_s,
         matching_enabled_ratio:
       })
       Bank.new(res)

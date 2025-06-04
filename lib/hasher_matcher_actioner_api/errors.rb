@@ -14,7 +14,9 @@ module HasherMatcherActionerApi
 
   class NotFoundError < Error; end
 
-  class PermissionError < Error; end
+  class ConfigurationError < Error; end
+
+  class ResourceAlreadyExistsError < Error; end
 
   class ServerError < Error; end
 

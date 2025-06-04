@@ -99,7 +99,15 @@ module HasherMatcherActionerApi
       when 401
         raise AuthenticationError, "Authentication required"
       when 403
-        raise PermissionError, "Permission denied: Required role not enabled"
+        error = response.body
+        message = error&.dig(:message)
+        if message&.match?(/already exists/)
+          raise ResourceAlreadyExistsError, "Resource already exists: #{message}"
+        elsif message&.match?(/missing role/)
+          raise ConfigurationError, "Configuration error: #{message}"
+        else
+          raise PermissionError, "Permission denied: #{message}"
+        end
       when 404
         raise NotFoundError, "Resource not found"
       when 500
