@@ -7,7 +7,7 @@ module HasherMatcherActionerApi
   class ConnectionError < Error; end
 
   # Usage Errors
-  class ArgumentError < Error; end
+  class ClientArgumentError < Error; end
 
   # API Errors
   class AuthenticationError < Error; end

@@ -78,7 +78,7 @@ module HasherMatcherActionerApi
     def validate_exchange_name!(name)
       return if SUPPORTED_EXCHANGES.include?(name)
 
-      raise HasherMatcherActionerApi::ArgumentError,
+      raise HasherMatcherActionerApi::ClientArgumentError,
         "Exchange '#{name}' is not supported. Supported exchanges: #{SUPPORTED_EXCHANGES.join(", ")}"
     end
 
