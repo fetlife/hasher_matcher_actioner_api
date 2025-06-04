@@ -35,7 +35,7 @@ module HasherMatcherActionerApi
 
     def get_exchange_api_config(name:)
       validate_exchange_name!(name)
-      Config.new(get("/c/exchanges/api/#{name}"))
+      Config.new(name:, **get("/c/exchanges/api/#{name}"))
     end
 
     def update_exchange_api_config(name:, credential_json:)
