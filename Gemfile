@@ -7,7 +7,7 @@ gemspec
 
 # Dev dependencies
 gem "irb"
-gem "rake", "~> 13.0"
+gem "rake", "~> 13.3"
 gem "rspec", "~> 3.0"
 gem "standard", "~> 1.50"
 gem "byebug", "~> 12.0"
