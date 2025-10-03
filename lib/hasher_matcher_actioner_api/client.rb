@@ -14,6 +14,7 @@ require_relative "exchanges"
 require_relative "hashing"
 require_relative "matching"
 require_relative "status"
+require_relative "validation"
 
 module HasherMatcherActionerApi
   class Client
@@ -24,6 +25,7 @@ module HasherMatcherActionerApi
     include Hashing
     include Matching
     include Status
+    include Validation
 
     attr_reader :conn
 
@@ -75,8 +77,10 @@ module HasherMatcherActionerApi
       raise ConnectionError, "Could not connect to the server at #{conn.url_prefix}. Is the server running?"
     end
 
-    def post(path, body = nil)
-      res = conn.post(path, body)
+    def post(path, body = nil, params = {})
+      res = conn.post(path, body) do |req|
+        req.params.merge!(params) if params.any?
+      end
       handle_response(res)
     rescue Faraday::ConnectionFailed
       raise ConnectionError, "Could not connect to the server at #{conn.url_prefix}. Is the server running?"

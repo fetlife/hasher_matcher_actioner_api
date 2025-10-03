@@ -6,7 +6,7 @@ RSpec.describe HasherMatcherActionerApi::Client do
   let(:client) { described_class.new(base_url: "http://127.0.0.1:5050", max_retries: 0) }
 
   describe "#hash_url" do
-    let(:url) { "https://i.ibb.co/wF7823P1/image-in-hash-db.jpg" }
+    let(:url) { "https://raw.githubusercontent.com/fetlife/hasher_matcher_actioner_api/main/spec/fixtures/image-in-hash-db.jpg" }
     let(:valid_content_type) { "photo" }
     let(:valid_signal_types) { ["pdq"] }
 

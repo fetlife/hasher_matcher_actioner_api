@@ -85,6 +85,74 @@ puts result.md5    # MD5 hash value
 puts result.sha256 # SHA256 hash value
 ```
 
+### Adding Content to Banks
+
+You can add content to banks for threat intelligence storage using two separate methods:
+
+#### Adding Content from URLs
+
+```ruby
+# Add content from a URL
+result = client.add_url_to_bank(
+  bank_name: 'my_threat_bank',
+  url: 'https://example.com/suspicious-image.jpg',
+  content_type: 'photo'
+)
+
+# Add content from URL with metadata
+metadata = {
+  content_id: 'unique-content-123',
+  content_uri: 'https://example.com/original-source.jpg',
+  json: { source: 'user_report', priority: 'high' }
+}
+
+result = client.add_url_to_bank(
+  bank_name: 'my_threat_bank',
+  url: 'https://example.com/suspicious-image.jpg',
+  content_type: 'photo',
+  metadata: metadata
+)
+
+# Works without content_type (auto-detected)
+result = client.add_url_to_bank(
+  bank_name: 'my_threat_bank',
+  url: 'https://example.com/suspicious-image.jpg'
+)
+```
+
+#### Adding Content from Files
+
+```ruby
+# Add content from a file
+File.open('path/to/suspicious-image.jpg', 'rb') do |file|
+  result = client.add_file_to_bank(
+    bank_name: 'my_threat_bank',
+    file: file,
+    content_type: 'photo'
+  )
+end
+
+# Add content from file with metadata
+metadata = {
+  content_id: 'unique-content-456',
+  content_uri: 'https://example.com/original-source.jpg',
+  json: { source: 'file_upload', priority: 'high' }
+}
+
+File.open('path/to/suspicious-image.jpg', 'rb') do |file|
+  result = client.add_file_to_bank(
+    bank_name: 'my_threat_bank',
+    file: file,
+    content_type: 'photo',
+    metadata: metadata
+  )
+end
+
+# Access the result
+puts result.id          # Content ID in the bank
+puts result.signals     # Generated hash signals
+```
+
 ### Error Handling
 
 The gem raises `ValidationError` for invalid inputs:
@@ -116,6 +184,29 @@ This will:
 - Create a git tag for the version
 - Push git commits and the created tag
 - Trigger Github release workflow
+
+
+## Using the local gem in another project
+
+To use this gem locally during development in another project:
+
+1. Configure the local gem path:
+```bash
+bundle config set local.hasher_matcher_actioner_api ../hasher_matcher_actioner_api
+bundle config disable_local_branch_check true
+```
+
+2. Add the gem to your project's Gemfile:
+```ruby
+gem "hasher_matcher_actioner_api", git: "https://github.com/fetlife/hasher_matcher_actioner_api", branch: 'main'
+```
+
+3. Run bundle install:
+```bash
+bundle install
+```
+
+Now you can use the gem in your project and any changes you make to the local gem will be immediately available without needing to rebuild or reinstall.
 
 ## Contributing
 
