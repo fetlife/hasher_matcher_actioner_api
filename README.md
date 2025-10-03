@@ -185,6 +185,29 @@ This will:
 - Push git commits and the created tag
 - Trigger Github release workflow
 
+
+## Using the local gem in another project
+
+To use this gem locally during development in another project:
+
+1. Configure the local gem path:
+```bash
+bundle config set local.hasher_matcher_actioner_api ../hasher_matcher_actioner_api
+bundle config disable_local_branch_check true
+```
+
+2. Add the gem to your project's Gemfile:
+```ruby
+gem "hasher_matcher_actioner_api", git: "https://github.com/fetlife/hasher_matcher_actioner_api", branch: 'main'
+```
+
+3. Run bundle install:
+```bash
+bundle install
+```
+
+Now you can use the gem in your project and any changes you make to the local gem will be immediately available without needing to rebuild or reinstall.
+
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/fetlife/hasher_matcher_actioner_api. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/fetlife/hasher_matcher_actioner_api/blob/main/CODE_OF_CONDUCT.md).
