@@ -10,14 +10,14 @@ module HasherMatcherActionerApi
 
     class BankContentResult < Dry::Struct
       attribute :id, HasherMatcherActionerApi::Types::Integer
-      
+
       # Nested signals structure with dynamic signal type attributes
       class Signals < Dry::Struct
         include HasherMatcherActionerApi::SignalAttributes
-        
+
         add_signal_attributes
       end
-      
+
       attribute :signals, Signals
     end
 
@@ -44,7 +44,7 @@ module HasherMatcherActionerApi
     def add_url_to_bank(bank_name:, url:, content_type: nil, metadata: nil)
       validate_content_type!(content_type)
 
-      params = { url: url }
+      params = {url: url}
       params[:content_type] = content_type if content_type
       params[:metadata] = metadata.to_json if metadata.is_a?(Hash)
 

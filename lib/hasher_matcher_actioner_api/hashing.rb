@@ -4,7 +4,7 @@ module HasherMatcherActionerApi
   module Hashing
     class HashResult < Dry::Struct
       include HasherMatcherActionerApi::SignalAttributes
-      
+
       add_signal_attributes
     end
 

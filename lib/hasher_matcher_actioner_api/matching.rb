@@ -24,7 +24,7 @@ module HasherMatcherActionerApi
 
     class LookupResult < Dry::Struct
       include HasherMatcherActionerApi::SignalAttributes
-      
+
       add_signal_attributes(Types::Hash.map(Types::Coercible::String, Types::Array(MatchWithDistance)))
 
       def normalized_matches
@@ -87,6 +87,5 @@ module HasherMatcherActionerApi
       res = LookupResult.new(post("/m/lookup", payload))
       res.normalized_matches
     end
-
   end
 end

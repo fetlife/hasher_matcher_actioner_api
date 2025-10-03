@@ -62,7 +62,7 @@ RSpec.describe HasherMatcherActionerApi::Client do
       metadata = {
         content_id: "test-content-456",
         content_uri: "https://example.com/original-image.jpg",
-        json: { source: "url_test", priority: "medium" }
+        json: {source: "url_test", priority: "medium"}
       }
 
       result = client.add_url_to_bank(
@@ -133,7 +133,7 @@ RSpec.describe HasherMatcherActionerApi::Client do
       metadata = {
         content_id: "test-content-123",
         content_uri: "https://example.com/original-image.jpg",
-        json: { source: "test", priority: "high" }
+        json: {source: "test", priority: "high"}
       }
 
       result = client.add_file_to_bank(
