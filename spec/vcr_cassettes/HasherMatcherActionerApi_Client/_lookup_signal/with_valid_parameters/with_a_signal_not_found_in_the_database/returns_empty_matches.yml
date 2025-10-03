@@ -1,0 +1,35 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: http://127.0.0.1:5050/m/lookup?signal=2c8b8a05f302cbf219e06c95c73ec65f5868098d77327698d196da6d99e7d38a&signal_type=pdq
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Faraday v2.14.0
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - Werkzeug/3.1.3 Python/3.11.12
+      Date:
+      - Fri, 03 Oct 2025 15:19:53 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '3'
+      Connection:
+      - close
+    body:
+      encoding: UTF-8
+      string: "{}\n"
+  recorded_at: Fri, 03 Oct 2025 15:19:53 GMT
+recorded_with: VCR 6.3.1

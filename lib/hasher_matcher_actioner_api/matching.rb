@@ -14,14 +14,39 @@ module HasherMatcherActionerApi
       attribute :distance, Types::Coercible::Integer
     end
 
+    # {
+    #   "matches": [
+    #     {
+    #       "bank_content_id": 4
+    #     }
+    #   ]
+    # }
     class MatchesResult < Dry::Struct
       attribute :matches, Types::Array.of(Types::Integer)
     end
 
+    # {
+    #   "matches": [
+    #     {
+    #       "bank_content_id": 4,
+    #       "distance": "0"
+    #     }
+    #   ]
+    # }
     class MatchesResultWithDistance < Dry::Struct
       attribute :matches, Types::Array.of(MatchWithDistance)
     end
 
+    # {
+    #   "pdq": {
+    #     "BANK": [
+    #       {
+    #         "bank_content_id": 4,
+    #         "distance": "0"
+    #       }
+    #     ]
+    #   }
+    # }
     class LookupResult < Dry::Struct
       include HasherMatcherActionerApi::SignalAttributes
 
@@ -35,6 +60,44 @@ module HasherMatcherActionerApi
             end
           end
         end.flatten
+      end
+    end
+
+    # {
+    #   "BANK_NAME": [
+    #     {
+    #       "bank_content_id": 66,
+    #       "distance": "0"
+    #     }
+    #   ],
+    #   "BANK_NAME_2": [
+    #     {
+    #       "bank_content_id": 4,
+    #       "distance": "0"
+    #     }
+    #   ]
+    # }
+    class LookupSignalResult < Dry::Struct
+      # The response is a flat hash where keys are bank names and values are arrays of matches
+      # We need to handle this as a flexible hash structure with string keys
+      transform_keys(&:to_sym)
+
+      # Define a flexible hash attribute that can handle any string key with array of MatchWithDistance values
+      attribute :matches_by_bank, Types::Hash.map(Types::Coercible::String, Types::Array(MatchWithDistance))
+
+      def normalized_matches(signal_type)
+        normalized_matches = []
+        matches_by_bank.each do |bank_name, matches|
+          matches.each do |match|
+            normalized_matches << NormalizedMatch.new(
+              signal_type: signal_type,
+              bank_name: bank_name.to_s,
+              bank_content_id: match.bank_content_id,
+              distance: match.distance
+            )
+          end
+        end
+        normalized_matches
       end
     end
 
@@ -86,6 +149,18 @@ module HasherMatcherActionerApi
 
       res = LookupResult.new(post("/m/lookup", payload))
       res.normalized_matches
+    end
+
+    def lookup_signal(signal, signal_type)
+      validate_signal_types!([signal_type])
+
+      params = {
+        signal: signal,
+        signal_type: signal_type
+      }
+
+      res = LookupSignalResult.new(matches_by_bank: get("/m/lookup", params))
+      res.normalized_matches(signal_type)
     end
   end
 end
