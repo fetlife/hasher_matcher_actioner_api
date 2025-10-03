@@ -42,4 +42,149 @@ RSpec.describe HasherMatcherActionerApi::Client do
       expect(client.bank_exists?(name: "NON_EXISTENT_BANK")).to be(false)
     end
   end
+
+  describe "#add_url_to_bank" do
+    let(:test_bank_name) { "TEST_BANK" }
+    let(:test_url) { "https://raw.githubusercontent.com/fetlife/hasher_matcher_actioner_api/main/spec/fixtures/image-in-hash-db.jpg" }
+
+    it "adds content to bank successfully", :vcr do
+      result = client.add_url_to_bank(
+        bank_name: test_bank_name,
+        url: test_url,
+        content_type: "photo"
+      )
+      expect(result).to be_a(HasherMatcherActionerApi::Banks::BankContentResult)
+      expect(result.id).to be_a(Integer)
+      expect(result.signals.pdq).to eq(HasherMatcherActionerApi::TestConstants::IMAGE_IN_DB_PDQ_HASH)
+    end
+
+    it "adds content with metadata", :vcr do
+      metadata = {
+        content_id: "test-content-456",
+        content_uri: "https://example.com/original-image.jpg",
+        json: { source: "url_test", priority: "medium" }
+      }
+
+      result = client.add_url_to_bank(
+        bank_name: test_bank_name,
+        url: test_url,
+        content_type: "photo",
+        metadata: metadata
+      )
+      expect(result).to be_a(HasherMatcherActionerApi::Banks::BankContentResult)
+      expect(result.id).to be_a(Integer)
+      expect(result.signals).to be_a(HasherMatcherActionerApi::Banks::BankContentResult::Signals)
+      expect(result.signals.pdq).to eq(HasherMatcherActionerApi::TestConstants::IMAGE_IN_DB_PDQ_HASH)
+    end
+
+    it "works without content_type", :vcr do
+      result = client.add_url_to_bank(
+        bank_name: test_bank_name,
+        url: test_url
+      )
+      expect(result).to be_a(HasherMatcherActionerApi::Banks::BankContentResult)
+      expect(result.id).to be_a(Integer)
+      expect(result.signals).to be_a(HasherMatcherActionerApi::Banks::BankContentResult::Signals)
+      expect(result.signals.pdq).to eq(HasherMatcherActionerApi::TestConstants::IMAGE_IN_DB_PDQ_HASH)
+    end
+
+    it "raises error for invalid content_type", :vcr do
+      expect {
+        client.add_url_to_bank(
+          bank_name: test_bank_name,
+          url: test_url,
+          content_type: "invalid_type"
+        )
+      }.to raise_error(HasherMatcherActionerApi::ValidationError)
+    end
+
+    it "raises error for non-existent bank", :vcr do
+      expect {
+        client.add_url_to_bank(
+          bank_name: "NON_EXISTENT_BANK",
+          url: test_url,
+          content_type: "photo"
+        )
+      }.to raise_error(HasherMatcherActionerApi::NotFoundError)
+    end
+  end
+
+  describe "#add_file_to_bank" do
+    let(:test_bank_name) { "TEST_BANK" }
+    let(:test_file) { File.open("spec/fixtures/image-in-hash-db.jpg", "rb") }
+
+    after do
+      test_file&.close
+    end
+
+    it "adds content to bank successfully", :vcr do
+      result = client.add_file_to_bank(
+        bank_name: test_bank_name,
+        file: test_file,
+        content_type: "photo"
+      )
+      expect(result).to be_a(HasherMatcherActionerApi::Banks::BankContentResult)
+      expect(result.id).to be_a(Integer)
+      expect(result.signals).to be_a(HasherMatcherActionerApi::Banks::BankContentResult::Signals)
+      expect(result.signals.pdq).to eq(HasherMatcherActionerApi::TestConstants::IMAGE_IN_DB_PDQ_HASH)
+    end
+
+    it "adds content with metadata", :vcr do
+      metadata = {
+        content_id: "test-content-123",
+        content_uri: "https://example.com/original-image.jpg",
+        json: { source: "test", priority: "high" }
+      }
+
+      result = client.add_file_to_bank(
+        bank_name: test_bank_name,
+        file: test_file,
+        content_type: "photo",
+        metadata: metadata
+      )
+      expect(result).to be_a(HasherMatcherActionerApi::Banks::BankContentResult)
+      expect(result.id).to be_a(Integer)
+      expect(result.signals).to be_a(HasherMatcherActionerApi::Banks::BankContentResult::Signals)
+      expect(result.signals.pdq).to eq(HasherMatcherActionerApi::TestConstants::IMAGE_IN_DB_PDQ_HASH)
+    end
+
+    it "raises error for missing content_type" do
+      expect {
+        client.add_file_to_bank(
+          bank_name: test_bank_name,
+          file: test_file
+        )
+      }.to raise_error(ArgumentError, /missing keyword: :content_type/)
+    end
+
+    it "raises error for invalid content_type", :vcr do
+      expect {
+        client.add_file_to_bank(
+          bank_name: test_bank_name,
+          file: test_file,
+          content_type: "invalid_type"
+        )
+      }.to raise_error(HasherMatcherActionerApi::ValidationError)
+    end
+
+    it "raises error for non-IO object", :vcr do
+      expect {
+        client.add_file_to_bank(
+          bank_name: test_bank_name,
+          file: "not a file",
+          content_type: "photo"
+        )
+      }.to raise_error(HasherMatcherActionerApi::ValidationError)
+    end
+
+    it "raises error for non-existent bank", :vcr do
+      expect {
+        client.add_file_to_bank(
+          bank_name: "NON_EXISTENT_BANK",
+          file: test_file,
+          content_type: "photo"
+        )
+      }.to raise_error(HasherMatcherActionerApi::NotFoundError)
+    end
+  end
 end

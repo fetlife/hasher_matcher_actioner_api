@@ -58,7 +58,7 @@ RSpec.describe HasherMatcherActionerApi::Client do
   end
 
   describe "#lookup_url" do
-    let(:url) { "https://i.ibb.co/wF7823P1/image-in-hash-db.jpg" }
+    let(:url) { "https://raw.githubusercontent.com/fetlife/hasher_matcher_actioner_api/main/spec/fixtures/image-in-hash-db.jpg" }
     let(:valid_content_type) { "photo" }
     let(:valid_signal_types) { ["pdq"] }
 
@@ -99,7 +99,7 @@ RSpec.describe HasherMatcherActionerApi::Client do
       end
 
       context "with a signal with a partial match found in the database" do
-        let(:url) { "https://i.ibb.co/hRFZPCZD/edit-of-image-in-hash-db.jpg" }
+        let(:url) { "https://raw.githubusercontent.com/fetlife/hasher_matcher_actioner_api/main/spec/fixtures/edit-of-image-in-hash-db.jpg" }
         it "returns matches result", :vcr do
           result = client.lookup_url(url)
           expect(result).not_to be_empty
@@ -113,7 +113,7 @@ RSpec.describe HasherMatcherActionerApi::Client do
       end
 
       context "with a signal not found in the database" do
-        let(:url) { "https://i.ibb.co/nNTSphV2/image-not-in-hash-db.jpg" }
+        let(:url) { "https://raw.githubusercontent.com/fetlife/hasher_matcher_actioner_api/main/spec/fixtures/image-not-in-hash-db.jpg" }
 
         it "returns empty matches", :vcr do
           result = client.lookup_url(url)

@@ -85,6 +85,74 @@ puts result.md5    # MD5 hash value
 puts result.sha256 # SHA256 hash value
 ```
 
+### Adding Content to Banks
+
+You can add content to banks for threat intelligence storage using two separate methods:
+
+#### Adding Content from URLs
+
+```ruby
+# Add content from a URL
+result = client.add_url_to_bank(
+  bank_name: 'my_threat_bank',
+  url: 'https://example.com/suspicious-image.jpg',
+  content_type: 'photo'
+)
+
+# Add content from URL with metadata
+metadata = {
+  content_id: 'unique-content-123',
+  content_uri: 'https://example.com/original-source.jpg',
+  json: { source: 'user_report', priority: 'high' }
+}
+
+result = client.add_url_to_bank(
+  bank_name: 'my_threat_bank',
+  url: 'https://example.com/suspicious-image.jpg',
+  content_type: 'photo',
+  metadata: metadata
+)
+
+# Works without content_type (auto-detected)
+result = client.add_url_to_bank(
+  bank_name: 'my_threat_bank',
+  url: 'https://example.com/suspicious-image.jpg'
+)
+```
+
+#### Adding Content from Files
+
+```ruby
+# Add content from a file
+File.open('path/to/suspicious-image.jpg', 'rb') do |file|
+  result = client.add_file_to_bank(
+    bank_name: 'my_threat_bank',
+    file: file,
+    content_type: 'photo'
+  )
+end
+
+# Add content from file with metadata
+metadata = {
+  content_id: 'unique-content-456',
+  content_uri: 'https://example.com/original-source.jpg',
+  json: { source: 'file_upload', priority: 'high' }
+}
+
+File.open('path/to/suspicious-image.jpg', 'rb') do |file|
+  result = client.add_file_to_bank(
+    bank_name: 'my_threat_bank',
+    file: file,
+    content_type: 'photo',
+    metadata: metadata
+  )
+end
+
+# Access the result
+puts result.id          # Content ID in the bank
+puts result.signals     # Generated hash signals
+```
+
 ### Error Handling
 
 The gem raises `ValidationError` for invalid inputs:

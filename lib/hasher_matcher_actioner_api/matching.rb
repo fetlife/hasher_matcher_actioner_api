@@ -23,9 +23,9 @@ module HasherMatcherActionerApi
     end
 
     class LookupResult < Dry::Struct
-      HasherMatcherActionerApi::Configuration::SIGNAL_TYPES.each do |type|
-        attribute? type, Types::Hash.map(Types::Coercible::String, Types::Array(MatchWithDistance))
-      end
+      include HasherMatcherActionerApi::SignalAttributes
+      
+      add_signal_attributes(Types::Hash.map(Types::Coercible::String, Types::Array(MatchWithDistance)))
 
       def normalized_matches
         attributes.map do |signal_type, matches_by_bank|
@@ -88,18 +88,5 @@ module HasherMatcherActionerApi
       res.normalized_matches
     end
 
-    private
-
-    def validate_content_type!(content_type)
-      if content_type && !Configuration::CONTENT_TYPES.include?(content_type)
-        raise ValidationError, "content_type must be one of: #{Configuration::CONTENT_TYPES.join(", ")}, received: #{content_type}"
-      end
-    end
-
-    def validate_signal_types!(signal_types)
-      if signal_types&.any? { |signal_type| !Configuration::SIGNAL_TYPES.include?(signal_type) }
-        raise ValidationError, "signal types must be one of: #{Configuration::SIGNAL_TYPES.join(", ")}, received: #{signal_types.join(", ")}"
-      end
-    end
   end
 end

@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: get
-    uri: http://127.0.0.1:5050/h/hash?url=https://i.ibb.co/wF7823P1/image-in-hash-db.jpg
+    uri: http://127.0.0.1:5050/h/hash?url=https://raw.githubusercontent.com/fetlife/hasher_matcher_actioner_api/main/spec/fixtures/image-in-hash-db.jpg
     body:
       encoding: US-ASCII
       string: ''
