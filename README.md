@@ -85,6 +85,55 @@ puts result.md5    # MD5 hash value
 puts result.sha256 # SHA256 hash value
 ```
 
+### Looking Up Content
+
+You can search for matches in banks using different methods:
+
+#### Lookup by URL
+
+```ruby
+# Search for matches by URL
+matches = client.lookup_url('https://example.com/image.jpg')
+
+# Search with specific content type
+matches = client.lookup_url(
+  'https://example.com/image.jpg',
+  content_type: 'photo'
+)
+
+# Search with specific signal types
+matches = client.lookup_url(
+  'https://example.com/image.jpg',
+  signal_types: ['pdq', 'md5']
+)
+```
+
+#### Lookup by File
+
+```ruby
+# Search for matches by file
+File.open('path/to/image.jpg', 'rb') do |file|
+  matches = client.lookup_file(file, content_type: 'photo')
+end
+```
+
+#### Lookup by Signal
+
+```ruby
+# Search for matches by hash signal
+matches = client.lookup_signal(
+  signal: 'abc123def456...',  # Hash value
+  signal_type: 'pdq'
+)
+
+# Access match details
+matches.each do |match|
+  puts "Found in bank: #{match.bank_name}"
+  puts "Content ID: #{match.bank_content_id}"
+  puts "Distance: #{match.distance}"
+end
+```
+
 ### Adding Content to Banks
 
 You can add content to banks for threat intelligence storage using two separate methods:

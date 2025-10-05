@@ -200,4 +200,58 @@ RSpec.describe HasherMatcherActionerApi::Client do
       end
     end
   end
+
+  describe "#lookup_signal" do
+    let(:signal) { HasherMatcherActionerApi::TestConstants::IMAGE_IN_DB_PDQ_HASH }
+    let(:signal_type) { "pdq" }
+
+    context "with valid parameters" do
+      context "with a signal found in the database" do
+        it "returns normalized matches", :vcr do
+          result = client.lookup_signal(signal, signal_type)
+          expect(result).not_to be_empty
+
+          # Find the match from BANK bank
+          bank_match = result.find { |match| match.bank_name == "BANK" }
+          expect(bank_match).not_to be_nil
+          expect(bank_match.signal_type).to eq("pdq")
+          expect(bank_match.bank_content_id).to eq(4)
+          expect(bank_match.distance).to eq(0)
+        end
+      end
+
+      context "with a signal with a partial match found in the database" do
+        let(:signal) { HasherMatcherActionerApi::TestConstants::IMAGE_EDIT_IN_DB_PDQ_HASH }
+
+        it "returns matches result", :vcr do
+          result = client.lookup_signal(signal, signal_type)
+          expect(result).not_to be_empty
+
+          # Find the match from BANK bank
+          bank_match = result.find { |match| match.bank_name == "BANK" }
+          expect(bank_match).not_to be_nil
+          expect(bank_match.signal_type).to eq("pdq")
+          expect(bank_match.bank_content_id).to eq(4)
+          expect(bank_match.distance).to eq(26)
+        end
+      end
+
+      context "with a signal not found in the database" do
+        let(:signal) { HasherMatcherActionerApi::TestConstants::IMAGE_NOT_IN_DB_PDQ_HASH }
+
+        it "returns empty matches", :vcr do
+          result = client.lookup_signal(signal, signal_type)
+          expect(result).to be_empty
+        end
+      end
+    end
+
+    context "with invalid parameters" do
+      it "raises error for invalid signal type" do
+        expect {
+          client.lookup_signal(signal, "invalid_type")
+        }.to raise_error(HasherMatcherActionerApi::ValidationError)
+      end
+    end
+  end
 end
