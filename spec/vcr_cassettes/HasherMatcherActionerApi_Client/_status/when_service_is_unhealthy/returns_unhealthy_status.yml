@@ -25,7 +25,7 @@ http_interactions:
       Content-Type:
       - text/html; charset=utf-8
       Content-Length:
-      - '10'
+      - '11'
       Connection:
       - close
     body:

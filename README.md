@@ -106,6 +106,12 @@ matches = client.lookup_url(
   'https://example.com/image.jpg',
   signal_types: ['pdq', 'md5']
 )
+
+# Search in specific banks only
+matches = client.lookup_url(
+  'https://example.com/image.jpg',
+  bank_names: ['bank1', 'bank2']
+)
 ```
 
 #### Lookup by File
@@ -114,6 +120,15 @@ matches = client.lookup_url(
 # Search for matches by file
 File.open('path/to/image.jpg', 'rb') do |file|
   matches = client.lookup_file(file, content_type: 'photo')
+end
+
+# Search in specific banks only
+File.open('path/to/image.jpg', 'rb') do |file|
+  matches = client.lookup_file(
+    file, 
+    content_type: 'photo',
+    bank_names: ['bank1', 'bank2']
+  )
 end
 ```
 
@@ -124,6 +139,13 @@ end
 matches = client.lookup_signal(
   signal: 'abc123def456...',  # Hash value
   signal_type: 'pdq'
+)
+
+# Search for matches in specific banks only
+matches = client.lookup_signal(
+  signal: 'abc123def456...',  # Hash value
+  signal_type: 'pdq',
+  bank_names: ['bank1', 'bank2']
 )
 
 # Access match details

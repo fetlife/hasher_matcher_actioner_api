@@ -21,29 +21,35 @@ http_interactions:
       Server:
       - Werkzeug/3.1.3 Python/3.11.12
       Date:
-      - Fri, 03 Oct 2025 15:19:53 GMT
+      - Fri, 10 Oct 2025 07:55:38 GMT
       Content-Type:
       - application/json
       Content-Length:
-      - '170'
+      - '259'
       Connection:
       - close
     body:
       encoding: UTF-8
       string: |
         {
-          "BANK": [
+          "OTHER_BANK": [
             {
               "bank_content_id": 4,
               "distance": "0"
             }
           ],
-          "NEW_BANK_NAME": [
+          "TEST_BANK": [
             {
               "bank_content_id": 6,
               "distance": "0"
             }
+          ],
+          "TEST_BANK_2": [
+            {
+              "bank_content_id": 25,
+              "distance": "0"
+            }
           ]
         }
-  recorded_at: Fri, 03 Oct 2025 15:19:53 GMT
+  recorded_at: Fri, 10 Oct 2025 07:55:38 GMT
 recorded_with: VCR 6.3.1
