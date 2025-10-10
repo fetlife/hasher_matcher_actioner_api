@@ -244,6 +244,47 @@ RSpec.describe HasherMatcherActionerApi::Client do
           expect(result).to be_empty
         end
       end
+
+      context "with bank_names parameter" do
+        it "returns matches only from the specified bank", :vcr do
+          result = client.lookup_signal(signal, signal_type, bank_names: ["TEST_BANK"])
+          expect(result).not_to be_empty
+          
+          # All matches should be from the specified bank
+          result.each do |match|
+            expect(match.bank_name).to eq("TEST_BANK")
+            expect(match.signal_type).to eq("pdq")
+          end
+        end
+
+        it "returns matches from multiple specified banks", :vcr do
+          result = client.lookup_signal(signal, signal_type, bank_names: ["TEST_BANK", "TEST_BANK_2"])
+          expect(result).not_to be_empty
+          
+          # All matches should be from the specified banks
+          bank_names = result.map(&:bank_name).uniq
+          expect(bank_names).to eq(["TEST_BANK", "TEST_BANK_2"])
+          result.each do |match|
+            expect(match.signal_type).to eq("pdq")
+          end
+        end
+
+        it "returns empty matches for non-existent bank", :vcr do
+          result = client.lookup_signal(signal, signal_type, bank_names: ["NON_EXISTENT_BANK"])
+          expect(result).to be_empty
+        end
+
+        it "returns matches from existing banks when some banks don't exist", :vcr do
+          result = client.lookup_signal(signal, signal_type, bank_names: ["TEST_BANK", "NON_EXISTENT_BANK"])
+          expect(result).not_to be_empty
+          
+          # All matches should be from the existing bank
+          result.each do |match|
+            expect(match.bank_name).to eq("TEST_BANK")
+            expect(match.signal_type).to eq("pdq")
+          end
+        end
+      end
     end
 
     context "with invalid parameters" do

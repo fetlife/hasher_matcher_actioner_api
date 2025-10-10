@@ -25,7 +25,7 @@ http_interactions:
       Content-Type:
       - application/json
       Content-Length:
-      - '3825'
+      - '172'
       Connection:
       - close
     body:
