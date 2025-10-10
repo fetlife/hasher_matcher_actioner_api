@@ -11,22 +11,20 @@ def fix_content_length_in_file(file_path)
 
   modified = false
 
-  if yaml_data["http_interactions"]
-    yaml_data["http_interactions"].each do |interaction|
-      if interaction["response"] && interaction["response"]["headers"] && interaction["response"]["body"]
-        headers = interaction["response"]["headers"]
-        body = interaction["response"]["body"]
+  yaml_data["http_interactions"]&.each do |interaction|
+    if interaction["response"] && interaction["response"]["headers"] && interaction["response"]["body"]
+      headers = interaction["response"]["headers"]
+      body = interaction["response"]["body"]
 
-        if headers["Content-Length"] && body["string"]
-          # Calculate actual content length
-          actual_length = body["string"].bytesize
-          current_length = headers["Content-Length"].first.to_i
+      if headers["Content-Length"] && body["string"]
+        # Calculate actual content length
+        actual_length = body["string"].bytesize
+        current_length = headers["Content-Length"].first.to_i
 
-          if actual_length != current_length
-            puts "  Fixing Content-Length: #{current_length} -> #{actual_length}"
-            headers["Content-Length"] = [actual_length]
-            modified = true
-          end
+        if actual_length != current_length
+          puts "  Fixing Content-Length: #{current_length} -> #{actual_length}"
+          headers["Content-Length"] = [actual_length]
+          modified = true
         end
       end
     end
