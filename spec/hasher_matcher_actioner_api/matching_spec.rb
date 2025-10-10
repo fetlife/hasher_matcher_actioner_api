@@ -96,6 +96,35 @@ RSpec.describe HasherMatcherActionerApi::Client do
             expect(result.first).to respond_to(:distance)
           end
         end
+
+        context "with bank_names parameter" do
+          it "returns matches only from the specified bank", :vcr do
+            result = client.lookup_url(url, bank_names: ["TEST_BANK"])
+            expect(result).not_to be_empty
+            
+            # All matches should be from the specified bank
+            result.each do |match|
+              expect(match.bank_name).to eq("TEST_BANK")
+              expect(match.signal_type).to eq("pdq")
+            end
+          end
+
+          it "returns empty matches for non-existent bank", :vcr do
+            result = client.lookup_url(url, bank_names: ["NON_EXISTENT_BANK"])
+            expect(result).to be_empty
+          end
+
+          it "returns matches from existing banks when some banks don't exist", :vcr do
+            result = client.lookup_url(url, bank_names: ["TEST_BANK", "NON_EXISTENT_BANK"])
+            expect(result).not_to be_empty
+            
+            # All matches should be from the existing bank
+            result.each do |match|
+              expect(match.bank_name).to eq("TEST_BANK")
+              expect(match.signal_type).to eq("pdq")
+            end
+          end
+        end
       end
 
       context "with a signal with a partial match found in the database" do
@@ -152,6 +181,35 @@ RSpec.describe HasherMatcherActionerApi::Client do
           expect(match.bank_name).to eq("BANK")
           expect(match.bank_content_id).to eq(4)
           expect(match.distance).to eq(0)
+        end
+
+        context "with bank_names parameter" do
+          it "returns matches only from the specified bank", vcr: {match_requests_on: [:method, :uri]} do
+            result = client.lookup_file(file, content_type: valid_content_type, bank_names: ["BANK"])
+            expect(result).not_to be_empty
+            
+            # All matches should be from the specified bank
+            result.each do |match|
+              expect(match.bank_name).to eq("BANK")
+              expect(match.signal_type).to eq("pdq")
+            end
+          end
+
+          it "returns empty matches for non-existent bank", vcr: {match_requests_on: [:method, :uri]} do
+            result = client.lookup_file(file, content_type: valid_content_type, bank_names: ["NON_EXISTENT_BANK"])
+            expect(result).to be_empty
+          end
+
+          it "returns matches from existing banks when some banks don't exist", vcr: {match_requests_on: [:method, :uri]} do
+            result = client.lookup_file(file, content_type: valid_content_type, bank_names: ["BANK", "NON_EXISTENT_BANK"])
+            expect(result).not_to be_empty
+            
+            # All matches should be from the existing bank
+            result.each do |match|
+              expect(match.bank_name).to eq("BANK")
+              expect(match.signal_type).to eq("pdq")
+            end
+          end
         end
       end
 

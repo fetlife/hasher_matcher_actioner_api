@@ -41,7 +41,7 @@ def fix_content_length_in_file(file_path)
 end
 
 # Find all VCR yml files
-vcr_dir = File.join(__dir__, 'spec', 'vcr_cassettes')
+vcr_dir = File.join(__dir__, '../', 'spec', 'vcr_cassettes')
 yml_files = Dir.glob(File.join(vcr_dir, '**', '*.yml'))
 
 puts "Found #{yml_files.length} VCR files to process"

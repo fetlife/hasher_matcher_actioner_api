@@ -81,9 +81,13 @@ module HasherMatcherActionerApi
 
       add_signal_attributes(Types::Hash.map(Types::Coercible::String, Types::Array(MatchWithDistance)))
 
-      def normalized_matches(bank_name: nil)
+      def normalized_matches(bank_names: nil)
         attributes.flat_map do |signal_type, matches_by_bank|
-          process_all_banks(signal_type.to_s, matches_by_bank)
+          if !bank_names.nil?
+            process_specific_banks(signal_type.to_s, matches_by_bank, bank_names)
+          else
+            process_all_banks(signal_type.to_s, matches_by_bank)
+          end
         end
       end
     end
@@ -137,7 +141,7 @@ module HasherMatcherActionerApi
       end
     end
 
-    def lookup_url(url, content_type: nil, signal_types: nil)
+    def lookup_url(url, content_type: nil, signal_types: nil, bank_names: nil)
       validate_content_type!(content_type)
       validate_signal_types!(signal_types)
 
@@ -146,10 +150,10 @@ module HasherMatcherActionerApi
       params[:types] = signal_types.join(",") if signal_types
 
       res = LookupResult.new(get("/m/lookup", params))
-      res.normalized_matches
+      res.normalized_matches(bank_names:)
     end
 
-    def lookup_file(file, content_type:)
+    def lookup_file(file, content_type:, bank_names: nil)
       validate_content_type!(content_type)
 
       unless file.respond_to?(:read)
@@ -166,7 +170,7 @@ module HasherMatcherActionerApi
       }
 
       res = LookupResult.new(post("/m/lookup", payload))
-      res.normalized_matches
+      res.normalized_matches(bank_names:)
     end
 
     def lookup_signal(signal, signal_type, bank_names: nil)
