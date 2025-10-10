@@ -37,7 +37,7 @@ module HasherMatcherActionerApi
       attribute :matches, Types::Array.of(MatchWithDistance)
     end
 
-    # Lookup result helpers 
+    # Lookup result helpers
     class BaseLookupResult < Dry::Struct
       def create_matches_for_bank(signal_type, bank_name, matches)
         matches.map do |match|
@@ -60,7 +60,7 @@ module HasherMatcherActionerApi
         bank_names.flat_map do |bank_name|
           matches = matches_by_bank[bank_name]
           next [] if matches.nil? || matches.empty?
-          
+
           create_matches_for_bank(signal_type, bank_name.to_s, matches)
         end
       end

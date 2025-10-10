@@ -101,7 +101,7 @@ RSpec.describe HasherMatcherActionerApi::Client do
           it "returns matches only from the specified bank", :vcr do
             result = client.lookup_url(url, bank_names: ["TEST_BANK"])
             expect(result).not_to be_empty
-            
+
             # All matches should be from the specified bank
             result.each do |match|
               expect(match.bank_name).to eq("TEST_BANK")
@@ -117,7 +117,7 @@ RSpec.describe HasherMatcherActionerApi::Client do
           it "returns matches from existing banks when some banks don't exist", :vcr do
             result = client.lookup_url(url, bank_names: ["TEST_BANK", "NON_EXISTENT_BANK"])
             expect(result).not_to be_empty
-            
+
             # All matches should be from the existing bank
             result.each do |match|
               expect(match.bank_name).to eq("TEST_BANK")
@@ -187,7 +187,7 @@ RSpec.describe HasherMatcherActionerApi::Client do
           it "returns matches only from the specified bank", vcr: {match_requests_on: [:method, :uri]} do
             result = client.lookup_file(file, content_type: valid_content_type, bank_names: ["TEST_BANK"])
             expect(result).not_to be_empty
-            
+
             # All matches should be from the specified bank
             result.each do |match|
               expect(match.bank_name).to eq("TEST_BANK")
@@ -203,7 +203,7 @@ RSpec.describe HasherMatcherActionerApi::Client do
           it "returns matches from existing banks when some banks don't exist", vcr: {match_requests_on: [:method, :uri]} do
             result = client.lookup_file(file, content_type: valid_content_type, bank_names: ["TEST_BANK", "NON_EXISTENT_BANK"])
             expect(result).not_to be_empty
-            
+
             # All matches should be from the existing bank
             result.each do |match|
               expect(match.bank_name).to eq("TEST_BANK")
@@ -307,7 +307,7 @@ RSpec.describe HasherMatcherActionerApi::Client do
         it "returns matches only from the specified bank", :vcr do
           result = client.lookup_signal(signal, signal_type, bank_names: ["TEST_BANK"])
           expect(result).not_to be_empty
-          
+
           # All matches should be from the specified bank
           result.each do |match|
             expect(match.bank_name).to eq("TEST_BANK")
@@ -318,7 +318,7 @@ RSpec.describe HasherMatcherActionerApi::Client do
         it "returns matches from multiple specified banks", :vcr do
           result = client.lookup_signal(signal, signal_type, bank_names: ["TEST_BANK", "TEST_BANK_2"])
           expect(result).not_to be_empty
-          
+
           # All matches should be from the specified banks
           bank_names = result.map(&:bank_name).uniq
           expect(bank_names).to eq(["TEST_BANK", "TEST_BANK_2"])
@@ -335,7 +335,7 @@ RSpec.describe HasherMatcherActionerApi::Client do
         it "returns matches from existing banks when some banks don't exist", :vcr do
           result = client.lookup_signal(signal, signal_type, bank_names: ["TEST_BANK", "NON_EXISTENT_BANK"])
           expect(result).not_to be_empty
-          
+
           # All matches should be from the existing bank
           result.each do |match|
             expect(match.bank_name).to eq("TEST_BANK")
