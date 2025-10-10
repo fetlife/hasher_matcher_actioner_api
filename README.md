@@ -223,6 +223,10 @@ After checking out the repo, run `bin/setup` to install dependencies. Then, run 
 
 To install this gem onto your local machine, run `bundle exec rake install`.
 
+### Code Style
+
+This project uses [standard](https://github.com/testdouble/standard) for Ruby code formatting and linting.
+
 ### Commit Messages
 
 Use [gitmoji](https://gitmoji.dev/) in commit messages to indicate the type of change.
