@@ -223,6 +223,10 @@ After checking out the repo, run `bin/setup` to install dependencies. Then, run 
 
 To install this gem onto your local machine, run `bundle exec rake install`.
 
+### Commit Messages
+
+Use [gitmoji](https://gitmoji.dev/) in commit messages to indicate the type of change.
+
 ### Releasing a New Version
 
 To release a new version:
