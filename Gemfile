@@ -9,7 +9,7 @@ gemspec
 gem "irb"
 gem "rake", "~> 13.3"
 gem "rspec", "~> 3.13"
-gem "standard", "~> 1.51"
+gem "standard", "~> 1.52"
 gem "byebug", "~> 12.0"
 gem "webmock", "~> 3.26"
 gem "vcr", "~> 6.2"
