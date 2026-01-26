@@ -16,7 +16,6 @@ GEM
     addressable (2.8.7)
       public_suffix (>= 2.0.2, < 7.0)
     ast (2.4.3)
-    base64 (0.3.0)
     bigdecimal (3.3.1)
     byebug (12.0.0)
     cgi (0.5.1)
@@ -148,8 +147,7 @@ GEM
       unicode-emoji (~> 4.1)
     unicode-emoji (4.1.0)
     uri (1.1.1)
-    vcr (6.3.1)
-      base64
+    vcr (6.4.0)
     webmock (3.26.1)
       addressable (>= 2.8.0)
       crack (>= 0.3.2)
@@ -167,7 +165,7 @@ DEPENDENCIES
   rake (~> 13.3)
   rspec (~> 3.13)
   standard (~> 1.52)
-  vcr (~> 6.2)
+  vcr (~> 6.4)
   webmock (~> 3.26)
 
 BUNDLED WITH
