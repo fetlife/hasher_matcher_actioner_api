@@ -13,7 +13,7 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
-    addressable (2.8.9)
+    addressable (2.9.0)
       public_suffix (>= 2.0.2, < 8.0)
     ast (2.4.3)
     bigdecimal (3.3.1)
@@ -149,7 +149,7 @@ GEM
     unicode-emoji (4.2.0)
     uri (1.1.1)
     vcr (6.4.0)
-    webmock (3.26.2)
+    webmock (3.26.4)
       addressable (>= 2.8.0)
       crack (>= 0.3.2)
       hashdiff (>= 0.4.0, < 2.0.0)
