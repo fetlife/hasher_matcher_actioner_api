@@ -9,8 +9,7 @@ on:
 
 jobs:
   release:
-    # setup-ruby has no Ruby 3.3.6 build for ubuntu-26.04.
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     permissions:
       contents: write
       packages: write
@@ -24,7 +23,7 @@ jobs:
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.3.6'
+          ruby-version: '3.3.12'
           bundler-cache: true
 
       - name: Install dependencies
