@@ -9,13 +9,12 @@ on:
 
 jobs:
   build:
-    # setup-ruby has no Ruby 3.3.6 build for ubuntu-26.04.
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     name: Ruby ${{ matrix.ruby }}
     strategy:
       matrix:
         ruby:
-          - '3.3.6'
+          - '3.3.12'
 
     steps:
       - uses: actions/checkout@v7
