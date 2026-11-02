@@ -32,7 +32,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "faraday", "~> 2.13"
   spec.add_dependency "faraday-retry", "~> 2.2"
   spec.add_dependency "faraday-multipart", "~> 1.1"
-  spec.add_dependency "json", "~> 2.12"
+  spec.add_dependency "json", ">= 2.12", "< 4.0"
   spec.add_dependency "dry-struct", "~> 1.8"
   spec.add_dependency "dry-types", "~> 1.8"
   spec.add_dependency "marcel", "~> 1.0"
