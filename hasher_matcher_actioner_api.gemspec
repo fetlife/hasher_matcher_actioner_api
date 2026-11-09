@@ -29,7 +29,7 @@ Gem::Specification.new do |spec|
   end
   spec.require_paths = ["lib"]
 
-  spec.add_dependency "faraday", "~> 2.13"
+  spec.add_dependency "faraday", "~> 2.14", ">= 2.14.4"
   spec.add_dependency "faraday-retry", "~> 2.2"
   spec.add_dependency "faraday-multipart", "~> 1.1"
   spec.add_dependency "json", ">= 2.12", "< 4.0"

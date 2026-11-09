@@ -4,7 +4,7 @@ PATH
     hasher_matcher_actioner_api (0.4.2)
       dry-struct (~> 1.8)
       dry-types (~> 1.8)
-      faraday (~> 2.13)
+      faraday (~> 2.14, >= 2.14.4)
       faraday-multipart (~> 1.1)
       faraday-retry (~> 2.2)
       json (>= 2.12, < 4.0)
